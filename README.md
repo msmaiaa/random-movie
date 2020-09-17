@@ -2,4 +2,4 @@
 
 Installation steps:
 - npm init
-- pip install ezflix
+- pip install requests
