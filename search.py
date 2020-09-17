@@ -10,8 +10,11 @@ class Search:
         self.rating = rating
         self.pageLimit = 50
 
-    def searchMovies(self):
+    def handleMovieParams(self):
         url = f"https://yts.mx/api/v2/list_movies.json?genre={self.genre}&minimum_rating={self.rating}&limit={self.pageLimit}"
+        self.requestMovieData(url)
+
+    def requestMovieData(self, url):
         response = requests.get(url).json()
         amountMovies = response["data"]["movie_count"]
         totalPages = math.ceil(amountMovies / self.pageLimit)
@@ -23,13 +26,15 @@ class Search:
         print(f"Title: {randomMovie['title']}")
         for q in randomMovie["torrents"]:
             print(f"Quality: {q['quality']} with {q['seeds']} seeds")
-        mediumQuality = randomMovie["torrents"][0]
+
         highQuality = randomMovie["torrents"][1]
         if not highQuality:
-            peerflix(randomMovie["torrents"][0]["url"], "mpchc", True)
+            self.startMovieStreaming(randomMovie["torrents"][0]["url"], "mpchc", True)
         else:
-            peerflix(randomMovie["torrents"][1]["url"], "mpchc", True)
-        
+            self.startMovieStreaming(randomMovie["torrents"][1]["url"], "mpchc", True)
+
+    def startMovieStreaming(self, url, player, remove):
+        peerflix(url, player, remove)
         
 
 
